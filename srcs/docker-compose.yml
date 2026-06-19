@@ -1,0 +1,27 @@
+services:
+  nginx:
+    build: 
+      context: ./requirements/nginx
+    image: mynginx
+    ports:
+      [443:443]
+    volumes:
+      - ./www:/var/www/html
+      - ./nginx/conf/nginx.conf:/etc/nginx.conf
+    depends_on:
+      - php-fpm
+    networks:
+      - inception
+  
+  php-fpm:
+    build: 
+      context: ./requirements/wordpress
+    image: myphpfpm
+    volumes:
+      - ./www:/var/www/html
+    networks:
+      - inception
+
+networks:
+  inception:
+    driver: bridge
