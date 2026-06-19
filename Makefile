@@ -20,8 +20,7 @@ clean: down
 	docker image prune -af; \
 
 fclean: clean
-	docker builder prune -af
-	#docker volume rm $(docker volume ls -q); \
+	docker system prune -af --volumes
 
 re: down up
 
