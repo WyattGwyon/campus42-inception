@@ -14,7 +14,8 @@ down: stop
 	docker compose -f srcs/docker-compose.yml down
 
 logs:
-	docker compose logs -f srcs/docker-compose.yml
+	docker logs srcs-nginx-1;
+	docker logs srcs-php-fpm-1;
 
 clean: down	
 	docker image prune -af; \

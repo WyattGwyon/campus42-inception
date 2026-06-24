@@ -11,6 +11,7 @@ RUN mkdir -p /etc/nginx/ssl && \
     -out /etc/nginx/ssl/nginx.crt \
     -subj "/CN=localhost"
 
+
 COPY conf/nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 443

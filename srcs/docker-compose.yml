@@ -6,8 +6,8 @@ services:
     ports:
       [443:443]
     volumes:
-      - ./www:/var/www/html
-      - ./nginx/conf/nginx.conf:/etc/nginx.conf
+      - webdata:/var/www/html
+      - ./requirements/nginx/conf/nginx.conf:/etc/nginx/nginx.conf
     depends_on:
       - php-fpm
     networks:
@@ -18,10 +18,20 @@ services:
       context: ./requirements/wordpress
     image: myphpfpm
     volumes:
-      - ./www:/var/www/html
+      - webdata:/var/www/html
+    networks:
+      - inception
+  
+  mariadb:
+    build:
+      context: ./requirements/mariadb
+    image: mymariadb
     networks:
       - inception
 
 networks:
   inception:
     driver: bridge
+
+volumes:
+  webdata:
