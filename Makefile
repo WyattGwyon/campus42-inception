@@ -1,8 +1,8 @@
 
-all: up
-
 up:
-	docker compose -f srcs/docker-compose.yml up -d --build
+	mkdir -p ~/data/mariadb ~/data/webdata;
+	docker compose -f srcs/docker-compose.yml up -d --build;
+	docker compose -f srcs/docker-compose.yml ps;
 
 stop:
 	docker compose -f srcs/docker-compose.yml stop
@@ -16,13 +16,18 @@ down: stop
 logs:
 	docker logs srcs-nginx-1;
 	docker logs srcs-php-fpm-1;
+	docker logs srcs-mariadb-1;
 
 clean: down	
-	docker image prune -af; \
+	docker image prune -af
 
-fclean: clean
-	docker system prune -af --volumes
+volclean:
+	docker volume rm $$(docker volume ls -q);
+	sudo rm -rf ~/data/mariadb ~/data/webdata;
+
+fclean: clean volclean
+	docker system prune -af
 
 re: down up
 
-.PHONY: all up stop restart down logs clean fclean re
+.PHONY: up stop restart down logs clean fclean volclean re

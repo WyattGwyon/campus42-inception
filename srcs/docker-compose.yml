@@ -3,6 +3,9 @@ services:
     build: 
       context: ./requirements/nginx
     image: mynginx
+    env_file: .env
+    environment:
+      - TZ=${TZ}
     ports:
       [443:443]
     volumes:
@@ -17,6 +20,9 @@ services:
     build: 
       context: ./requirements/wordpress
     image: myphpfpm
+    env_file: .env
+    environment:
+      - TZ=${TZ}
     volumes:
       - webdata:/var/www/html
     networks:
@@ -26,12 +32,29 @@ services:
     build:
       context: ./requirements/mariadb
     image: mymariadb
+    env_file: .env
+    environment:
+      - TZ=${TZ}
+    volumes: 
+      - dbdata:/var/lib/mysql
     networks:
       - inception
+    restart: on-failure
 
 networks:
   inception:
     driver: bridge
 
 volumes:
-  webdata:
+  webdata: 
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/${USER}/data/webdata
+  dbdata:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/${USER}/data/mariadb
