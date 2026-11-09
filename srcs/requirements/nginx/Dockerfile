@@ -1,7 +1,7 @@
-FROM debian:bullseye-slim
+FROM debian:trixie
 
 RUN apt-get update && \
-    apt-get install -y nginx openssl iputils-ping netcat && \ 
+    apt-get install -y nginx openssl iputils-ping netcat-openbsd && \ 
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /etc/nginx/ssl && \
