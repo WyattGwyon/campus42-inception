@@ -1,4 +1,4 @@
-FROM debian:trixie
+FROM debian:12
 
 RUN apt-get update && \
     apt-get install -y mariadb-server && \
@@ -8,11 +8,13 @@ RUN apt-get update && \
 RUN mkdir -p /var/lib/mysql && chown -R mysql:mysql /var/lib/mysql
 
 # Socket directory
-RUN mkdir -p /run/mysqld && chown -R mysql:mysql /run/mysqld
+#RUN mkdir -p /run/mysqld && chown -R mysql:mysql /run/mysqld
 
 COPY conf/my.cnf /etc/mysql/my.cnf
 COPY tools/setup.sh .
 
 RUN chmod +x setup.sh
+
+EXPOSE 3306
 
 CMD ["./setup.sh"]

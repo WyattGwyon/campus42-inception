@@ -1,4 +1,4 @@
-FROM debian:trixie
+FROM debian:12
 
 RUN apt-get update && \
     apt-get install -y nginx openssl iputils-ping netcat-openbsd && \ 

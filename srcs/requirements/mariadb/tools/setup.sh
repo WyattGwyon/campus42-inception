@@ -1,41 +1,36 @@
 #!/bin/bash
 
-echo "DEBUG: MYSQL_DATABASE=$MYSQL_DATABASE"
-echo "DEBUG: MYSQL_USER=$MYSQL_USER"
-
-#if [ ! -d /var/lib/mysql/mysql ]; then
 if [ ! -f /var/lib/mysql/.initialized ]; then
     echo "Initializing MariaDB data directory..."
-    rm -rf /var/lib/mysql/*
-
-    mysql_install_db --user=mysql --datadir=/var/lib/mysql
-    echo "DEBUG: mysql_install_db done, starting mysqld..."
-
+    mariadb-install-db --user=mysql --datadir=/var/lib/mysql
     touch /var/lib/mysql/.initialized
 fi
 
-exec mysqld --user=mysql &
-MYSQL_PID=$!
+chown -R mysql:mysql /var/lib/mysql
 
+mkdir -p /run/mysqld
+chown mysql:mysql /run/mysqld
+
+echo "Starting MariadDB..."
+mysqld --user=mysql \
+	--datadir=/var/lib/mysql \
+	--bind-address=0.0.0.0 &
+	MYSQL_PID=$!
 
 echo "Waiting for mysql to be ready..."
-    #mysqld --user=mysql --skip-networking --socket=/tmp/mysql.sock & MYSQL_PID=$!
-    #echo "DEBUG: mysqld started with PID $MYSQL_PID"
 
-while ! mysqladmin ping --socket=/tmp/mysql.sock --silent 2>/dev/null; do
-	echo "Waiting for MariaDB to start..."
+##until mysqladmin ping --socket=/run/mysqld/mysqld.sock --silent 2>/dev/null; do
+until mysqladmin ping -u root -p"${MYSQL_ROOT_PASSWORD}" --silent 2>/dev/null; do
+	echo "Creating Database and user..."
 	sleep 5
 done
-echo "DEBUG: mysqld responding to ping"
 
-echo "DEBUG: Running SQL creation block..."
-echo "DEBUG: MYSQL_DATABASE value: ${MYSQL_DATABASE}"
-echo "DEBUG: MYSQL_USER value: ${MYSQL_USER}"
-echo "DEBUG: MYSQL_DATABASE value: ${MYSQL_PASSWORD}"
+echo "DEBUG: mysqld responding to ping"
 
 if [ ! -f /var/lib/mysql/.sql_initialized ]; then
 	echo "Running SQL setup..."
-    mysql --socket=/tmp/mysql.sock << EOF
+    ##mysql --socket=/run/mysqld/mysqld.sock << EOF
+    mysql -u root << EOF
 create database if not exists ${MYSQL_DATABASE};
 create user if not exists '${MYSQL_USER}'@'%' identified by '${MYSQL_PASSWORD}';
 grant all privileges on ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'%';
@@ -45,11 +40,19 @@ EOF
 	SQL_EXIT=$?
 	echo "DEBUG: SQL block exit code: $SQL_EXIT"
 	
-	echo "DEBUG: Shutting down temporary mysqld..."
-    #mysqladmin shutdown --socket=/tmp/mysql.sock -u root -p"${MYSQL_ROOT_PASSWORD}"
+#	echo "DEBUG: Shutting down temporary mysqld..."
+#	mysqladmin shutdown --socket=/tmp/mysql.sock -u root -p"${MYSQL_ROOT_PASSWORD}"
+#	mysqladmin shutdown -u root -p"${MYSQL_ROOT_PASSWORD}"
 
-    touch /var/lib/mysql/.sql_initialized
+    if [ "$SQL_EXIT" -eq 0 ]; then
+        echo "SQL sucessfully initialized"
+        touch /var/lib/mysql/.sql_initialized
+    else
+        echo "ERROR: SQL Failed initialization with error code ${SQL_EXIT}"
+        exit 1
+    fi
+    #wait $MYSQL_PID
 fi
 
 wait $MYSQL_PID
-#exec mysqld --user=mysql
+#exec mysqld --user=mysql --datadir=/var/lib/mysql --bind-address=0.0.0.0
