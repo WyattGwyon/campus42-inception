@@ -24,10 +24,6 @@ cd /var/www/html
 
 if [ ! -f /var/www/html/wp-config.php ]; then
     echo "Installing Wordpress..."
-    #curl -o latest.tar.gz https://wordpress.org/latest.tar.gz
-    #tar -xzf latest.tar.gz
-    #cp -a wordpress/* .
-    #rm -rf wordpress latest.tar.gz
 
     wp core download --allow-root
 
@@ -39,7 +35,7 @@ if [ ! -f /var/www/html/wp-config.php ]; then
         --allow-root
 
     wp core install \
-        --url="http://localhost" \
+        --url="https://127.0.0.1:8443" \
         --title="My Site" \
         --admin_user="${WP_ADMIN_USER}" \
         --admin_email="${WP_ADMIN_EMAIL}" \
@@ -52,5 +48,6 @@ if [ ! -f /var/www/html/wp-config.php ]; then
         --allow-root
 
 fi
-
+wp option update siteurl "https://127.0.0.1:8443" --allow-root
+wp option update home "https://127.0.0.1:8443" --allow-root
 exec php-fpm8.2 -F

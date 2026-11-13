@@ -19,17 +19,13 @@ mysqld --user=mysql \
 
 echo "Waiting for mysql to be ready..."
 
-##until mysqladmin ping --socket=/run/mysqld/mysqld.sock --silent 2>/dev/null; do
 until mysqladmin ping -u root -p"${MYSQL_ROOT_PASSWORD}" --silent 2>/dev/null; do
 	echo "Creating Database and user..."
 	sleep 5
 done
 
-echo "DEBUG: mysqld responding to ping"
-
 if [ ! -f /var/lib/mysql/.sql_initialized ]; then
 	echo "Running SQL setup..."
-    ##mysql --socket=/run/mysqld/mysqld.sock << EOF
     mysql -u root << EOF
 create database if not exists ${MYSQL_DATABASE};
 create user if not exists '${MYSQL_USER}'@'%' identified by '${MYSQL_PASSWORD}';
@@ -40,10 +36,6 @@ EOF
 	SQL_EXIT=$?
 	echo "DEBUG: SQL block exit code: $SQL_EXIT"
 	
-#	echo "DEBUG: Shutting down temporary mysqld..."
-#	mysqladmin shutdown --socket=/tmp/mysql.sock -u root -p"${MYSQL_ROOT_PASSWORD}"
-#	mysqladmin shutdown -u root -p"${MYSQL_ROOT_PASSWORD}"
-
     if [ "$SQL_EXIT" -eq 0 ]; then
         echo "SQL sucessfully initialized"
         touch /var/lib/mysql/.sql_initialized
@@ -51,8 +43,6 @@ EOF
         echo "ERROR: SQL Failed initialization with error code ${SQL_EXIT}"
         exit 1
     fi
-    #wait $MYSQL_PID
 fi
 
 wait $MYSQL_PID
-#exec mysqld --user=mysql --datadir=/var/lib/mysql --bind-address=0.0.0.0

@@ -7,14 +7,11 @@ RUN apt-get update && \
 # Data directory
 RUN mkdir -p /var/lib/mysql && chown -R mysql:mysql /var/lib/mysql
 
-# Socket directory
-#RUN mkdir -p /run/mysqld && chown -R mysql:mysql /run/mysqld
-
 COPY conf/my.cnf /etc/mysql/my.cnf
 COPY tools/setup.sh .
 
 RUN chmod +x setup.sh
 
-EXPOSE 3306
+#EXPOSE 3306
 
 CMD ["./setup.sh"]

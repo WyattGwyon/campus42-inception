@@ -19,7 +19,7 @@ COPY tools/wp-setup.sh .
 
 RUN chmod +x wp-setup.sh
 
-EXPOSE 9000 
+#EXPOSE 9000 
 
 CMD ["./wp-setup.sh"]
 
