@@ -1,7 +1,16 @@
 #!/bin/bash
 
+MYSQL_ROOT_PASSWORD=$(cat /run/secrets/db_root_password)
+MYSQL_PASSWORD=$(cat /run/secrets/db_password)
+WP_ADMIN_PASSWORD=$(cat /run/secrets/wp_admin_password)
+WP_PASSWORD=$(cat /run/secrets/wp_user_password)
+
 echo "Waiting for MariaDB to be ready..."
-until mysqladmin ping -h "mariadb" -u "${MYSQL_USER}" -p"${MYSQL_PASSWORD}" --silent 2>/dev/null; do
+until mysqladmin ping \
+	-h "mariadb" \
+	-u "${MYSQL_USER}" \
+	-p"${MYSQL_PASSWORD}" \
+	--silent 2>/dev/null; do
 	echo "MariaDB not ready, waiting..."
 	sleep 2
 done
@@ -24,10 +33,6 @@ cd /var/www/html
 
 if [ ! -f /var/www/html/wp-config.php ]; then
     echo "Installing Wordpress..."
-    #curl -o latest.tar.gz https://wordpress.org/latest.tar.gz
-    #tar -xzf latest.tar.gz
-    #cp -a wordpress/* .
-    #rm -rf wordpress latest.tar.gz
 
     wp core download --allow-root
 
@@ -39,7 +44,7 @@ if [ ! -f /var/www/html/wp-config.php ]; then
         --allow-root
 
     wp core install \
-        --url="http://localhost" \
+        --url="https://${DOMAIN}:8443" \
         --title="My Site" \
         --admin_user="${WP_ADMIN_USER}" \
         --admin_email="${WP_ADMIN_EMAIL}" \

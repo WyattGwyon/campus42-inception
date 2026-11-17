@@ -14,8 +14,14 @@ down: stop
 	docker compose -f srcs/docker-compose.yml down
 
 logs:
+	@echo ""
+	@echo "[NGINX]"
 	docker logs srcs-nginx-1;
+	@echo ""
+	@echo "[WORDPRESS]"
 	docker logs srcs-php-fpm-1;
+	@echo ""
+	@echo "[MARIADB]"
 	docker logs srcs-mariadb-1;
 
 clean: down	
