@@ -1,6 +1,6 @@
 services:
   nginx:
-    build: 
+    build:
       context: ./requirements/nginx
     image: mynginx
     env_file: .env
@@ -15,9 +15,9 @@ services:
       - php-fpm
     networks:
       - inception
-  
+
   php-fpm:
-    build: 
+    build:
       context: ./requirements/wordpress
     image: myphpfpm
     env_file: .env
@@ -32,7 +32,7 @@ services:
       - wp_user_password
     networks:
       - inception
-  
+
   mariadb:
     build:
       context: ./requirements/mariadb
@@ -40,7 +40,7 @@ services:
     env_file: .env
     environment:
       - TZ=${TZ}
-    volumes: 
+    volumes:
       - dbdata:/var/lib/mysql
     secrets:
       - db_root_password
@@ -54,7 +54,7 @@ networks:
     driver: bridge
 
 volumes:
-  webdata: 
+  webdata:
     driver: local
     driver_opts:
       type: none
