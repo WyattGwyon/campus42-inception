@@ -46,6 +46,9 @@ This Dockerfile defines how to build each layer of a **Docker Image**.
 Once the image is built then we can create one or many containers which can run separately from each other. Each one will have this same layered image as what is defined in the Dockerfile.
 
 ![Union Capable File System|445](assets/union_capable_file_system.png)
+<p align="center">
+  <img src="assets/union_capable_file_system.png" width="400">
+</p>
 
 Because of the **Union Capable File System**, Docker containers are able to see each layer as a unified view. Albeit these layers are read only and are only references to the sames resources that other containers spawned from the same image share.
 
