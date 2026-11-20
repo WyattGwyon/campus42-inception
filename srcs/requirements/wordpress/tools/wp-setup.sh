@@ -35,13 +35,13 @@ done
 
 echo "WordPress DB is ready"
 
-cd /var/www/html
-
 # ----------------------------------------
 
 # WORDPRESS INSTALLATION
 
 # ----------------------------------------
+
+cd /var/www/html
 
 if [ ! -f /var/www/html/wp-config.php ]; then
     echo "Installing Wordpress..."
@@ -88,6 +88,15 @@ if wp redis enable --allow-root; then
 else
 	echo "WARNING: Could not enable Redis object caching"
 fi
+
+# ----------------------------------------
+
+# PERMISSIONS
+
+# ----------------------------------------
+
+chown -R www-data:www-data /var/www/html
+chmod -R 755 /var/www/html
 
 echo "WordPress setup complete"
 

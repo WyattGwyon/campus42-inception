@@ -49,6 +49,16 @@ services:
       - inception
     restart: on-failure
 
+  redis:
+    build:
+      context: ./requirements/bonus/redis
+    image: redis
+    networks:
+      - inception
+    restart: always
+    depends_on:
+      - nginx
+
 networks:
   inception:
     driver: bridge

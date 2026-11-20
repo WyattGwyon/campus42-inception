@@ -5,6 +5,7 @@ RUN apt-get update && apt-get install -y \
     php-mysql \
     curl \
     mariadb-client \
+	php8.2-redis redis-tools\
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
