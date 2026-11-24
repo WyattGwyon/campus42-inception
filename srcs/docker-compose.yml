@@ -49,6 +49,8 @@ services:
       - inception
     restart: on-failure
 
+# BONUS Start
+
   redis:
     build:
       context: ./requirements/bonus/redis
@@ -58,6 +60,20 @@ services:
     restart: always
     depends_on:
       - nginx
+
+  adminer:
+    build:
+      context: ./requirements/bonus/adminer
+    image: adminer
+    restart: always
+    networks:
+      - inception
+    volumes:
+      - webdata:/var/www/html
+    depends_on:
+      - php-fpm
+
+# BONUS End
 
 networks:
   inception:

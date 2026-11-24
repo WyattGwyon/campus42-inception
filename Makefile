@@ -28,7 +28,8 @@ clean: down
 	docker image prune -af
 
 volclean:
-	docker volume rm $$(docker volume ls -q);
+#	docker volume rm $$(docker volume ls -q);
+	docker volume rm srcs_webdata srcs_dbdata;
 	sudo rm -rf ~/data/mariadb ~/data/webdata;
 
 fclean: clean volclean
