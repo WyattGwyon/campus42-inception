@@ -73,6 +73,24 @@ services:
     depends_on:
       - php-fpm
 
+  ftp:
+    build:
+      context: ./requirements/bonus/ftp
+    image: ftp
+    env_file: .env
+    restart: always
+    networks:
+      - inception
+    volumes:
+      - webdata:/var/www/html
+    depends_on:
+      - php-fpm
+    secrets:
+      - ftp_password
+    ports:
+      - "21:21"
+      - "21100-21110:21100-21110"
+
 # BONUS End
 
 networks:
@@ -105,3 +123,6 @@ secrets:
 
   wp_user_password:
     file: ../secrets/wp_user_password.txt
+
+  ftp_password:
+    file: ../secrets/ftp_password.txt
