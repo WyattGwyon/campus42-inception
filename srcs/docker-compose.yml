@@ -1,7 +1,8 @@
 services:
   nginx:
     build:
-      context: ./requirements/nginx
+      context: .
+      dockerfile: ./requirements/nginx/Dockerfile
     image: mynginx
     env_file: .env
     environment:
