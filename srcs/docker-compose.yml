@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: ./requirements/nginx/Dockerfile
-    image: mynginx
+    image: nginx
     env_file: .env
     environment:
       - TZ=${TZ}
@@ -20,7 +20,7 @@ services:
   php-fpm:
     build:
       context: ./requirements/wordpress
-    image: myphpfpm
+    image: php-fpm
     env_file: .env
     environment:
       - TZ=${TZ}
@@ -37,7 +37,7 @@ services:
   mariadb:
     build:
       context: ./requirements/mariadb
-    image: mymariadb
+    image: mariadb
     env_file: .env
     environment:
       - TZ=${TZ}
@@ -92,6 +92,19 @@ services:
       - "21:21"
       - "21100-21110:21100-21110"
 
+  kuma:
+    build:
+      context: ./requirements/bonus/kuma
+    image: kuma
+    restart: always
+    networks:
+      - inception
+    ports:
+      - "3001:3001"
+    volumes:
+      - kumadata:/app/data
+
+
 # BONUS End
 
 networks:
@@ -111,6 +124,12 @@ volumes:
       type: none
       o: bind
       device: /home/${USER}/data/mariadb
+  kumadata:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/${USER}/data/kumadata
 
 secrets:
   db_root_password:

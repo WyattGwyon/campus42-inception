@@ -1,6 +1,6 @@
 
 up:
-	mkdir -p ~/data/mariadb ~/data/webdata;
+	mkdir -p ~/data ~/data/mariadb ~/data/webdata ~/data/kumadata;
 	docker compose -f srcs/docker-compose.yml up -d --build;
 	docker compose -f srcs/docker-compose.yml ps;
 
@@ -30,7 +30,7 @@ clean: down
 volclean:
 #	docker volume rm $$(docker volume ls -q);
 	docker volume rm srcs_webdata srcs_dbdata;
-	sudo rm -rf ~/data/mariadb ~/data/webdata;
+	sudo rm -rf ~/data;
 
 fclean: clean volclean
 	docker system prune -af
